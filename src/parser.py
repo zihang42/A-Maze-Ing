@@ -3,7 +3,7 @@ from typing import Any, Self
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from src.utils import GenerateMethod
+from mazegen.algo.utils import GenerateMethod
 
 
 class ConfigModel(BaseModel):
@@ -63,3 +63,7 @@ class Parser:
                 raise ValueError(f"{lineno}: expected KEY=VALUE format!")
             data[key.strip()] = value.strip()
         return data
+
+    def to_config(self) -> ConfigModel:
+        data = self.parse()
+        return ConfigModel(**data)

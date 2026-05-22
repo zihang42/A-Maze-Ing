@@ -29,4 +29,4 @@ jobs:
               run: uv run mypy --exclude .venv .
 
             - name: Run pytest
-              run: uv run python -m pytest
+              run: uv run pytest

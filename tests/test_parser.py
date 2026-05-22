@@ -4,8 +4,10 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from parser import ConfigModel, Parser
-from src.utils import GenerateMethod
+from src.parser import ConfigModel, Parser
+from mazegen.algo.utils import GenerateMethod
+
+# Test for validation model
 
 
 @pytest.fixture
@@ -51,6 +53,23 @@ def test_entry_exit_out_bound(valid_data: dict[str, Any]) -> None:
         ConfigModel(**valid_data)
 
 
+@pytest.mark.parametrize("bad_width", ["-1", "0", "1"])
+def test_invalid_width(valid_data, bad_width) -> None:
+    valid_data["WIDTH"] = bad_width
+    with pytest.raises(ValidationError):
+        ConfigModel(**valid_data)
+
+
+@pytest.mark.parametrize("bad_algo", ["Unknown", 1, "ABC"])
+def test_invalid_algo(valid_data, bad_algo) -> None:
+    valid_data["ALGORITHM"] = bad_algo
+    with pytest.raises(ValidationError):
+        ConfigModel(**valid_data)
+
+
+# Test for config parser
+
+
 def test_valid_parser(tmp_path: Path) -> None:
     f = tmp_path / "valid_config.txt"
     content = """
@@ -78,3 +97,28 @@ DISPLAY_42= True
     assert model.exit == (9, 9)
     assert model.algorithm == GenerateMethod.BACKTRACKING
     assert model.display_42 is True
+    assert parser.to_config() == model
+
+
+def test_parser_file_not_found() -> None:
+    parser = Parser("Unknown Path")
+    with pytest.raises(FileNotFoundError):
+        parser.parse()
+
+
+def test_parser_not_text_file(tmp_path) -> None:
+    f = tmp_path / "config.mp4"
+    f.write_text("WIDTH=2")
+    parser = Parser(str(f))
+    with pytest.raises(ValueError) as info:
+        parser.parse()
+    assert "config file is not a .txt file!" in str(info.value)
+
+
+def test_parser_bad_format(tmp_path):
+    f = tmp_path / "config.txt"
+    f.write_text("WIDTH: 2")
+    parser = Parser(str(f))
+    with pytest.raises(ValueError) as info:
+        parser.parse()
+    assert "expected KEY=VALUE format!" in str(info.value)
