@@ -23,6 +23,7 @@ class SolveMethod(Enum):
 class AlgorithmGen(ABC):
     grid: MazeGrid
     visited: np.ndarray
+    start: tuple[int, int]
     direction: list[tuple[int, int, int, int]] = field(
         default_factory=lambda: list(DIRECTIONS)
     )
@@ -41,3 +42,14 @@ class AlgorithmSolve(ABC):
     @abstractmethod
     def solve(self) -> list[tuple[int, int]]:
         pass
+
+
+def is_blocked(grid: MazeGrid, coord: tuple[int, int]) -> bool:
+    return grid.blocked[coord[0], coord[1]]
+
+
+def is_in_bound(grid: MazeGrid, row: int, col: int) -> bool:
+    return 0 <= row < grid.shape[0] and 0 <= col < grid.shape[1]
+
+def open_wall(grid: MazeGrid, row: int, col: int, wall_index: int) -> None:
+    grid.walls[row, col, wall_index] = False

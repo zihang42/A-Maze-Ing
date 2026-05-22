@@ -1,4 +1,4 @@
-from .astar import AstartSolve
+from .astar import AstarSolve
 from .backtracking import BacktrackingGen
 from .utils import AlgorithmGen, AlgorithmSolve, GenerateMethod, SolveMethod
 
@@ -8,7 +8,7 @@ class AlgorithmFactory:
         GenerateMethod | SolveMethod, type[AlgorithmGen] | type[AlgorithmSolve]
     ] = {
         GenerateMethod.BACKTRACKING: BacktrackingGen,
-        SolveMethod.ASTAR: AstartSolve,
+        SolveMethod.ASTAR: AstarSolve,
     }
 
     @classmethod

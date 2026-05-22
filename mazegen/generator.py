@@ -1,3 +1,4 @@
+import random
 from typing import Self
 
 import numpy as np
@@ -6,7 +7,7 @@ from src.parser import Parser
 
 from .algo.algo_factory import AlgorithmFactory
 from .algo.utils import AlgorithmGen, GenerateMethod
-from .utils import MazeGrid
+from .utils import PATTERN_42, MazeGrid
 
 
 class MazeGenerator:
@@ -34,6 +35,7 @@ class MazeGenerator:
             np.zeros((self.height, self.width), dtype=bool),
         )
         self._visited = np.zeros((self.height, self.width), dtype=bool)
+        random.seed(seed)
 
     @classmethod
     def from_config(cls, path: str) -> Self:
@@ -45,10 +47,16 @@ class MazeGenerator:
         if not method:
             method = self.algorithm
         if self.display_42:
-            self._apply_42_pattern()
+            try:
+                self._apply_42_pattern()
+            except ValueError as e:
+                print(e)
         try:
             algo = AlgorithmFactory.create(
-                method, grid=self._grid, visited=self._visited
+                method,
+                grid=self._grid,
+                visited=self._visited,
+                start=self.entry,
             )
             if isinstance(algo, AlgorithmGen):
                 algo.generate()
@@ -59,11 +67,29 @@ class MazeGenerator:
         return self._grid
 
     def _apply_42_pattern(self):
-        """
-        #TODO:
-        Append 42Pattern into visited
-        """
-        pass
+        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
+        if height_42 < 8 or width_42 < 8:
+            raise ValueError(
+                "to apply 42 pattern, the minimum size of maze is 8X8"
+            )
+        h_start = (self.height - height_42) // 2
+        w_start = (self.width - width_42) // 2
+        cells = []
+        for height in range(height_42):
+            for width in range(width_42):
+                if PATTERN_42[height][width] == 1:
+                    coord = (h_start + height, w_start + width)
+                    if coord == self.entry:
+                        raise ValueError(
+                            f"42 pattern is overlapped with entry: {coord}"
+                        )
+                    elif coord == self.exit:
+                        raise ValueError(
+                            f"42 pattern is overlapped with exit: {coord}"
+                        )
+                    cells.append(coord)
+        for x, y in cells:
+            self._grid.blocked[x][y] = True
 
     def _imperfect(self):
         """
