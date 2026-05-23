@@ -4,8 +4,7 @@ from enum import Enum
 
 import numpy as np
 
-from mazegen.generator import MazeGrid
-from mazegen.utils import DIRECTIONS
+from ..utils import DIRECTIONS, MazeGrid
 
 
 class GenerateMethod(Enum):
@@ -50,6 +49,7 @@ def is_blocked(grid: MazeGrid, coord: tuple[int, int]) -> bool:
 
 def is_in_bound(grid: MazeGrid, row: int, col: int) -> bool:
     return 0 <= row < grid.shape[0] and 0 <= col < grid.shape[1]
+
 
 def open_wall(grid: MazeGrid, row: int, col: int, wall_index: int) -> None:
     grid.walls[row, col, wall_index] = False

@@ -21,6 +21,7 @@ class MazeGenerator:
         seed: int = 42,
         perfect: bool = True,
         display_42: bool = True,
+        output_file: str | None = None,
     ) -> None:
         self.width = width
         self.height = height
@@ -30,6 +31,7 @@ class MazeGenerator:
         self.seed = seed
         self.perfect = perfect
         self.display_42 = display_42
+        self.output_file = output_file
         self._grid = MazeGrid(
             np.ones((self.height, self.width, 4), dtype=bool),
             np.zeros((self.height, self.width), dtype=bool),
@@ -44,33 +46,28 @@ class MazeGenerator:
         return cls(**config.model_dump())
 
     def generate(self, method: GenerateMethod | None) -> MazeGrid:
-        if not method:
+        if method is None:
             method = self.algorithm
         if self.display_42:
-            try:
-                self._apply_42_pattern()
-            except ValueError as e:
-                print(e)
-        try:
-            algo = AlgorithmFactory.create(
-                method,
-                grid=self._grid,
-                visited=self._visited,
-                start=self.entry,
-            )
-            if isinstance(algo, AlgorithmGen):
-                algo.generate()
-        except ValueError as e:
-            print(e)
+            self._apply_42_pattern()
+        algo = AlgorithmFactory.create(
+            method,
+            grid=self._grid,
+            visited=self._visited,
+            start=self.entry,
+        )
+        if isinstance(algo, AlgorithmGen):
+            algo.generate()
         if not self.perfect:
             self._imperfect()
         return self._grid
 
-    def _apply_42_pattern(self):
+    def _apply_42_pattern(self) -> None:
         height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
-        if height_42 < 8 or width_42 < 8:
+        if self.height < height_42 or self.width < width_42:
             raise ValueError(
-                "to apply 42 pattern, the minimum size of maze is 8X8"
+                f"maze size {self.width}x{self.height} is too small for "
+                f"42 pattern {width_42}x{height_42}"
             )
         h_start = (self.height - height_42) // 2
         w_start = (self.width - width_42) // 2
@@ -90,6 +87,34 @@ class MazeGenerator:
                     cells.append(coord)
         for x, y in cells:
             self._grid.blocked[x][y] = True
+
+    def print_maze(self) -> None:
+        grid = self._grid.walls
+        h, w = grid.shape[0], grid.shape[1]
+        print("+" + "---+" * w)
+        for i in range(h):
+            row = "|"
+            for j in range(w):
+                if (i, j) == self.entry:
+                    cell = " E "
+                elif (i, j) == self.exit:
+                    cell = " X "
+                elif self._grid.blocked[i][j]:
+                    cell = "###"
+                else:
+                    cell = "   "
+                if grid[i][j][1]:
+                    row += cell + "|"
+                else:
+                    row += cell + " "
+            print(row)
+            bottom = "+"
+            for j in range(w):
+                if grid[i][j][2]:
+                    bottom += "---+"
+                else:
+                    bottom += "   +"
+            print(bottom)
 
     def _imperfect(self):
         """

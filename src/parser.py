@@ -20,18 +20,25 @@ class ConfigModel(BaseModel):
     display_42: bool = Field(default=True, alias="DISPLAY_42")
 
     @field_validator("entry", "exit", mode="before")
-    def parse_coord(cls, coord: str) -> tuple[int, int]:
+    def parse_coord(cls, coord: str | tuple[int, int]) -> tuple[int, int]:
+        if isinstance(coord, tuple):
+            return coord
         if isinstance(coord, str):
-            x, y = coord.split(",")
-            if x.isdigit() and y.isdigit():
-                return (int(x), int(y))
-        raise ValueError
+            parts = coord.split(",")
+            if len(parts) == 2:
+                x_str, y_str = (part.strip() for part in parts)
+            else:
+                raise ValueError("coordinate must be x,y")
+            if x_str.isdigit() and y_str.isdigit():
+                x, y = int(x_str), int(y_str)
+                return (y, x)
+        raise ValueError("coordinate must be x,y")
 
     @model_validator(mode="after")
     def validate_coord(self) -> Self:
         def _in_bounds(coord: tuple[int, int]) -> bool:
-            x, y = coord
-            return 0 <= x <= self.width and 0 <= y <= self.height
+            row, col = coord
+            return 0 <= row < self.height and 0 <= col < self.width
 
         if self.entry == self.exit:
             raise ValueError("entry and exit can't be the same!")

@@ -10,9 +10,10 @@ class BacktrackingGen(AlgorithmGen):
     def _backtracking(self, coord: tuple[int, int]) -> None:
         if is_blocked(self.grid, coord):
             return
-        random.shuffle(self.direction)
+        directions = list(self.direction)
+        random.shuffle(directions)
         self.visited[coord[0], coord[1]] = True
-        for move_row, move_col, curr_wall, target_wall in self.direction:
+        for move_row, move_col, curr_wall, target_wall in directions:
             target_row = move_row + coord[0]
             target_col = move_col + coord[1]
             if not is_in_bound(self.grid, target_row, target_col):

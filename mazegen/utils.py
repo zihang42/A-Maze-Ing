@@ -37,7 +37,7 @@ class MazeGrid:
 
     @property
     def shape(self) -> tuple[int, int]:
-        return (self.walls[0], self.walls[1])
+        return self.walls.shape[:2]
 
     @property
     def size(self) -> int:

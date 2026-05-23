@@ -29,7 +29,7 @@ def test_valid_date(valid_data: dict[str, Any]) -> None:
     model = ConfigModel(**valid_data)
     assert model.width == 10
     assert model.height == 10
-    assert model.entry == (0, 1)
+    assert model.entry == (1, 0)
     assert model.exit == (9, 9)
     assert model.output_file == "maze.txt"
     assert model.perfect is True
@@ -51,6 +51,15 @@ def test_entry_exit_out_bound(valid_data: dict[str, Any]) -> None:
     valid_data["EXIT"] = "15,20"
     with pytest.raises(ValidationError):
         ConfigModel(**valid_data)
+
+
+def test_entry_exit_rejects_edge_equal_to_dimension(
+    valid_data: dict[str, Any],
+) -> None:
+    valid_data["ENTRY"] = "10,1"
+    with pytest.raises(ValidationError) as info:
+        ConfigModel(**valid_data)
+    assert "entry can't be outside of the bound!" in str(info.value)
 
 
 @pytest.mark.parametrize("bad_width", ["-1", "0", "1"])
@@ -93,7 +102,7 @@ DISPLAY_42= True
     assert data["SEED"] == "42"
     assert "# This a comment" not in data
     model = ConfigModel(**data)
-    assert model.entry == (0, 1)
+    assert model.entry == (1, 0)
     assert model.exit == (9, 9)
     assert model.algorithm == GenerateMethod.BACKTRACKING
     assert model.display_42 is True
