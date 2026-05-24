@@ -23,6 +23,7 @@ jobs:
               run: uv sync
 
             - name: Check flake8
+
               run: uv run flake8 --exclude=.venv,tests/output_validator.py .
 
             - name: Check mypy
@@ -30,3 +31,5 @@ jobs:
 
             - name: Run pytest
               run: uv run pytest
+
+
