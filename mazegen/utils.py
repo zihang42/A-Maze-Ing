@@ -3,7 +3,7 @@ from enum import Enum
 
 import numpy as np
 
-PATTERN_42: list[list[int]] = [
+PATTERN_42 = [
     [1, 0, 0, 0, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 0, 1, 1, 1],
@@ -27,7 +27,7 @@ class Direction(Enum):
     WEST = (0, -1, 3, 1)
 
 
-DIRECTIONS: list[tuple[int, int, int, int]] = [d.value for d in Direction]
+DIRECTIONS = [d.value for d in Direction]
 
 
 @dataclass

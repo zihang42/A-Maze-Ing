@@ -6,7 +6,7 @@ import numpy as np
 from src.parser import Parser
 
 from .algo.algo_factory import AlgorithmFactory
-from .algo.utils import AlgorithmGen, GenerateMethod
+from .algo.utils import AlgorithmGen, GenerateMethod, open_wall
 from .utils import PATTERN_42, MazeGrid
 
 
@@ -62,32 +62,6 @@ class MazeGenerator:
             self._imperfect()
         return self._grid
 
-    def _apply_42_pattern(self) -> None:
-        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
-        if self.height < height_42 or self.width < width_42:
-            raise ValueError(
-                f"maze size {self.width}x{self.height} is too small for "
-                f"42 pattern {width_42}x{height_42}"
-            )
-        h_start = (self.height - height_42) // 2
-        w_start = (self.width - width_42) // 2
-        cells = []
-        for height in range(height_42):
-            for width in range(width_42):
-                if PATTERN_42[height][width] == 1:
-                    coord = (h_start + height, w_start + width)
-                    if coord == self.entry:
-                        raise ValueError(
-                            f"42 pattern is overlapped with entry: {coord}"
-                        )
-                    elif coord == self.exit:
-                        raise ValueError(
-                            f"42 pattern is overlapped with exit: {coord}"
-                        )
-                    cells.append(coord)
-        for x, y in cells:
-            self._grid.blocked[x][y] = True
-
     def print_maze(self) -> None:
         grid = self._grid.walls
         h, w = grid.shape[0], grid.shape[1]
@@ -116,9 +90,58 @@ class MazeGenerator:
                     bottom += "   +"
             print(bottom)
 
-    def _imperfect(self):
-        """
-        #TODO:
-        WIP
-        """
-        pass
+    def _apply_42_pattern(self) -> None:
+        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
+        if self.height < height_42 or self.width < width_42:
+            raise ValueError(
+                f"maze size {self.width}x{self.height} is too small for "
+                f"42 pattern {width_42}x{height_42}"
+            )
+        h_start = (self.height - height_42) // 2
+        w_start = (self.width - width_42) // 2
+        cells = []
+        for height in range(height_42):
+            for width in range(width_42):
+                if PATTERN_42[height][width] == 1:
+                    coord = (h_start + height, w_start + width)
+                    if coord == self.entry:
+                        raise ValueError(
+                            f"42 pattern is overlapped with entry: {coord}"
+                        )
+                    elif coord == self.exit:
+                        raise ValueError(
+                            f"42 pattern is overlapped with exit: {coord}"
+                        )
+                    cells.append(coord)
+        for x, y in cells:
+            self._grid.blocked[x][y] = True
+
+    def _imperfect(self) -> None:
+        stamps = max(1, (self.width * self.height) // 30)
+        seen: list[tuple[int, int]] = []
+        for _ in range(stamps):
+            row = random.randint(0, self.height - 2)
+            col = random.randint(0, self.width - 2)
+            if any(abs(row - r) < 3 and abs(col - c) < 3 for r, c in seen):
+                continue
+            if self._grid.blocked[row, col]:
+                continue
+            if self._grid.blocked[row, col + 1]:
+                continue
+            if self._grid.blocked[row + 1, col]:
+                continue
+            if self._grid.blocked[row + 1, col + 1]:
+                continue
+
+            self._apply_stamp(row, col)
+            seen.append((row, col))
+
+    def _apply_stamp(self, row: int, col: int) -> None:
+        open_wall(self._grid, row, col, 1)
+        open_wall(self._grid, row, col + 1, 3)
+        open_wall(self._grid, row, col, 2)
+        open_wall(self._grid, row + 1, col, 0)
+        open_wall(self._grid, row, col + 1, 2)
+        open_wall(self._grid, row + 1, col + 1, 0)
+        open_wall(self._grid, row + 1, col, 1)
+        open_wall(self._grid, row + 1, col + 1, 3)
