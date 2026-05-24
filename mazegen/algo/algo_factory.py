@@ -1,5 +1,6 @@
 from .astar import AstarSolve
 from .backtracking import BacktrackingGen
+from .binary_tree import BinaryTreeGen
 from .utils import AlgorithmGen, AlgorithmSolve, GenerateMethod, SolveMethod
 
 
@@ -18,6 +19,7 @@ class AlgorithmFactory:
         GenerateMethod | SolveMethod, type[AlgorithmGen] | type[AlgorithmSolve]
     ] = {
         GenerateMethod.BACKTRACKING: BacktrackingGen,
+        GenerateMethod.BINARY_TREE: BinaryTreeGen,
         SolveMethod.ASTAR: AstarSolve,
     }
 

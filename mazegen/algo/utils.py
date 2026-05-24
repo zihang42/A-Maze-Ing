@@ -13,6 +13,7 @@ class GenerateMethod(Enum):
     '''
     BACKTRACKING = "backtracking"
     PRIM = "prim"
+    BINARY_TREE = "binary_tree"
 
 
 class SolveMethod(Enum):
