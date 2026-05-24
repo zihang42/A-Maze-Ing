@@ -118,7 +118,7 @@ class MazeGenerator:
 
     def _imperfect(self) -> None:
         stamps = max(1, (self.width * self.height) // 30)
-        seen = []
+        seen: list[tuple[int, int]] = []
         for _ in range(stamps):
             row = random.randint(0, self.height - 2)
             col = random.randint(0, self.width - 2)

@@ -11,10 +11,8 @@ PATTERN_42 = [
     [0, 0, 1, 0, 1, 1, 1],
 ]
 
-STAMP_2X2 = [
-    [1, 1],
-    [1, 1]
-]
+STAMP_2X2 = [[1, 1], [1, 1]]
+
 
 class Direction(Enum):
     """
