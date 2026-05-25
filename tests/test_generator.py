@@ -56,7 +56,7 @@ def test_from_config_converts_xy_coordinates_to_row_col(
                 "OUTPUT_FILE=maze.txt",
                 "PERFECT=True",
                 "SEED=123",
-                "ALGORITHM=backtracking",
+                "ALGORITHM=binary_tree",
                 "DISPLAY_42=False",
             ]
         )
@@ -70,7 +70,7 @@ def test_from_config_converts_xy_coordinates_to_row_col(
     assert generator.exit == (5, 7)
     assert generator.output_file == "maze.txt"
     assert generator.seed == 123
-    assert generator.algorithm == GenerateMethod.BACKTRACKING
+    assert generator.algorithm == GenerateMethod.BINARY_TREE
     assert generator.display_42 is False
 
 

@@ -25,7 +25,7 @@ def valid_data() -> dict[str, Any]:
     }
 
 
-def test_valid_date(valid_data: dict[str, Any]) -> None:
+def test_valid_data(valid_data: dict[str, Any]) -> None:
     model = ConfigModel(**valid_data)
     assert model.width == 10
     assert model.height == 10
@@ -48,8 +48,8 @@ def test_same_entry_exit(valid_data: dict[str, Any]) -> None:
 
 def test_entry_exit_out_bound(valid_data: dict[str, Any]) -> None:
     valid_data["ENTRY"] = "12,2"
-    valid_data["EXIT"] = "15,20"
-    with pytest.raises(ValidationError):
+    valid_data["EXIT"] = "10,10"
+    with pytest.raises(expected_exception=ValidationError):
         ConfigModel(**valid_data)
 
 
