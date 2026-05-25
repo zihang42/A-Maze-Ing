@@ -11,6 +11,29 @@ from .utils import PATTERN_42, MazeGrid
 
 
 class MazeGenerator:
+    '''
+        The class that handle all the lifespan of the maze
+
+        This class centralize all the important information
+        as the dimension, entry, exit handle the choosen algorithm
+        the output, seed and initialize the maze grid
+
+        Attributes:
+            width:     The maze's width as an int
+            height:    The maze's height as an int
+            entry:     The entry coord as an int tuple
+            exit:      The exit coord as an int tuple
+            algorithm: The choosen algorithm
+                       backtracking by default
+            seed:      The maze's seed as an int 42 by default
+            perfect:   Indicate if the maze must be perfect
+                       with a bool True by default
+            display_42: Indicate if the 42 symbol must be
+                        displayed True by default
+            output_file: Optional file name as an str for
+                         the output None by default
+    '''
+
     def __init__(
         self,
         width: int,
@@ -41,11 +64,36 @@ class MazeGenerator:
 
     @classmethod
     def from_config(cls, path: str) -> Self:
+        '''
+            Create an instance of MazeGenerator with a config file
+
+            Use the parsing with the ConfigModel pydantic class to instanciate
+            MazeGenerator with the parameter of the given file
+
+            Args:
+                path: path to the file which contain the config
+
+            Returns:
+                An instance of MazeGenerator configurated with the given file
+        '''
         parser = Parser(path)
         config = parser.to_config()
         return cls(**config.model_dump())
 
     def generate(self, method: GenerateMethod | None) -> MazeGrid:
+        '''
+            The complet maze generation
+
+            Make the 42 patern and instanciate the choosen algorithm class
+            with the fatory and then generate the maze
+
+            Args:
+                method: The choosen algoritm to be initiate, if none it's the
+                        default one
+
+            Returns:
+                The final MazeGrid created with the choosen algorithm
+        '''
         if method is None:
             method = self.algorithm
         if self.display_42:
@@ -62,7 +110,53 @@ class MazeGenerator:
             self._imperfect()
         return self._grid
 
+    def _apply_42_pattern(self) -> None:
+        '''
+            Compute the center of the grid to display the 42 pattern
+
+            It but the cells of the pattern in the block so they
+            can not be used
+
+            Raises:
+                ValueError: If the grid is too small to contain the pattern
+                            or if the pattern erase the entry or exit
+        '''
+        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
+        if self.height < height_42 or self.width < width_42:
+            raise ValueError(
+                f"maze size {self.width}x{self.height} is too small for "
+                f"42 pattern {width_42}x{height_42}"
+            )
+        h_start = (self.height - height_42) // 2
+        w_start = (self.width - width_42) // 2
+        cells = []
+        for height in range(height_42):
+            for width in range(width_42):
+                if PATTERN_42[height][width] == 1:
+                    coord = (h_start + height, w_start + width)
+                    if coord == self.entry:
+                        raise ValueError(
+                            f"42 pattern is overlapped with entry: {coord}"
+                        )
+                    elif coord == self.exit:
+                        raise ValueError(
+                            f"42 pattern is overlapped with exit: {coord}"
+                        )
+                    cells.append(coord)
+        for x, y in cells:
+            self._grid.blocked[x][y] = True
+
     def print_maze(self) -> None:
+        '''
+            Make an assci representation of the maze
+
+            Go trough the numpy dimentional array and print:
+                + and --- for the borders
+                | for the vertical walls
+                E for the entry
+                X for the exit
+                ### for the cells of the 42 pattern
+        '''
         grid = self._grid.walls
         h, w = grid.shape[0], grid.shape[1]
         print("+" + "---+" * w)
@@ -89,32 +183,6 @@ class MazeGenerator:
                 else:
                     bottom += "   +"
             print(bottom)
-
-    def _apply_42_pattern(self) -> None:
-        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
-        if self.height < height_42 or self.width < width_42:
-            raise ValueError(
-                f"maze size {self.width}x{self.height} is too small for "
-                f"42 pattern {width_42}x{height_42}"
-            )
-        h_start = (self.height - height_42) // 2
-        w_start = (self.width - width_42) // 2
-        cells = []
-        for height in range(height_42):
-            for width in range(width_42):
-                if PATTERN_42[height][width] == 1:
-                    coord = (h_start + height, w_start + width)
-                    if coord == self.entry:
-                        raise ValueError(
-                            f"42 pattern is overlapped with entry: {coord}"
-                        )
-                    elif coord == self.exit:
-                        raise ValueError(
-                            f"42 pattern is overlapped with exit: {coord}"
-                        )
-                    cells.append(coord)
-        for x, y in cells:
-            self._grid.blocked[x][y] = True
 
     def _imperfect(self) -> None:
         stamps = max(1, (self.width * self.height) // 30)

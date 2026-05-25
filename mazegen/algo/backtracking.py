@@ -8,6 +8,15 @@ class BacktrackingGen(AlgorithmGen):
         self._backtracking(self.start)
 
     def _backtracking(self, coord: tuple[int, int]) -> None:
+        '''
+            The backtracking algorithm, which is using recursion
+
+            Args:
+                coord: The coord of the actual block
+
+            Returns:
+                The next coord as a tuple if it pass the checks
+        '''
         if is_blocked(self.grid, coord):
             return
         directions = list(self.direction)
