@@ -12,7 +12,7 @@ class AlgorithmFactory:
         dynamically instanciate them
 
         Attributes:
-            _registry: A dict that associate a generating/solving method 
+            _registry: A dict that associate a generating/solving method
                        with it's class
     '''
     _registry: dict[
@@ -32,7 +32,8 @@ class AlgorithmFactory:
 
             Args:
                 method: The choosen algorithm (solve or generate)
-                **kwargs: keyword args given to the constructor of the given algorithm
+                **kwargs: keyword args given to the constructor of the
+                          given algorithm
 
             Returns:
                 An initialised instance of the given class

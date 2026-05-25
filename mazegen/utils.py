@@ -5,9 +5,9 @@ import numpy as np
 
 
 PATTERN_42: list[list[int]] = [
-'''
-    The matrix for the Forty Two icone
-'''
+    '''
+        The matrix for the Forty Two icone
+    '''
     [1, 0, 0, 0, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 0, 1, 1, 1],

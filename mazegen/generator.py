@@ -19,15 +19,19 @@ class MazeGenerator:
         the output, seed and initialize the maze grid
 
         Attributes:
-            width: The maze's width as an int
-            height: The maze's height as an int
-            entry: The entry coord as an int tuple
-            exit: The exit coord as an int tuple
-            algorithm: The choosen algorithm, backtracking by default
-            seed: The maze's seed as an int 42 by default
-            perfect: Indicate if the maze must be perfect with a bool True by default
-            display_42: Indicate if the 42 symbol must be displayed True by default
-            output_file: Optional file name as an str for the output None by default
+            width:     The maze's width as an int
+            height:    The maze's height as an int
+            entry:     The entry coord as an int tuple
+            exit:      The exit coord as an int tuple
+            algorithm: The choosen algorithm
+                       backtracking by default
+            seed:      The maze's seed as an int 42 by default
+            perfect:   Indicate if the maze must be perfect
+                       with a bool True by default
+            display_42: Indicate if the 42 symbol must be
+                        displayed True by default
+            output_file: Optional file name as an str for
+                         the output None by default
     '''
 
     def __init__(
@@ -179,32 +183,6 @@ class MazeGenerator:
                 else:
                     bottom += "   +"
             print(bottom)
-
-    def _apply_42_pattern(self) -> None:
-        height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
-        if self.height < height_42 or self.width < width_42:
-            raise ValueError(
-                f"maze size {self.width}x{self.height} is too small for "
-                f"42 pattern {width_42}x{height_42}"
-            )
-        h_start = (self.height - height_42) // 2
-        w_start = (self.width - width_42) // 2
-        cells = []
-        for height in range(height_42):
-            for width in range(width_42):
-                if PATTERN_42[height][width] == 1:
-                    coord = (h_start + height, w_start + width)
-                    if coord == self.entry:
-                        raise ValueError(
-                            f"42 pattern is overlapped with entry: {coord}"
-                        )
-                    elif coord == self.exit:
-                        raise ValueError(
-                            f"42 pattern is overlapped with exit: {coord}"
-                        )
-                    cells.append(coord)
-        for x, y in cells:
-            self._grid.blocked[x][y] = True
 
     def _imperfect(self) -> None:
         stamps = max(1, (self.width * self.height) // 30)

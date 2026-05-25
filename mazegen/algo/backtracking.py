@@ -12,7 +12,7 @@ class BacktrackingGen(AlgorithmGen):
             The backtracking algorithm, which is using recursion
 
             Args:
-                coord: The coord of the actual block 
+                coord: The coord of the actual block
 
             Returns:
                 The next coord as a tuple if it pass the checks

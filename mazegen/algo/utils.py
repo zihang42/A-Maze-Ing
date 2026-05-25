@@ -37,8 +37,10 @@ class AlgorithmGen(ABC):
             direction: A list of tuple which will give our direction:
                     move_row: the row were we're going
                     move_col: the col were we're going
-                    curr_wall: the wall that sould be broken to go to the target
-                    target_wall: the wall of the target that have been break
+                    curr_wall: the wall that sould be broken to go
+                               to the target
+                    target_wall: the wall of the target that have
+                                  been break
     '''
     grid: MazeGrid
     visited: np.ndarray

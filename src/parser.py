@@ -28,10 +28,10 @@ class ConfigModel(BaseModel):
                          the maze perfect or not
             seed:        With the key alias SEED is the seed of the maze as an
                          int by default it is 42 and must be greater than 0
-            algorithm:   With the key alias ALGORITHM is the algorithm that must
-                         be used by default it is backtracking
-            display_42:  With the key alias DISPLAY_42 is a boolean to choos if
-                         the 42 pattern is shown
+            algorithm:   With the key alias ALGORITHM is the algorithm that
+                         must be used by default it is backtracking
+            display_42:  With the key alias DISPLAY_42 is a boolean to
+                         choos if the 42 pattern is shown
     '''
     width: int = Field(..., alias="WIDTH", gt=2)
     height: int = Field(..., alias="HEIGHT", gt=2)

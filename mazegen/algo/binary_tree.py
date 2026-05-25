@@ -33,6 +33,7 @@ class BinaryTreeGen(AlgorithmGen):
                    and not is_blocked(self.grid, (north_row, north_col)):
                     choice.append((north_row, north_col, 0, 2))
                 if choice:
-                    target_row, target_col, curr_wall, target_wall = random.choice(choice)
+                    target_row, target_col, curr_wall, \
+                        target_wall = random.choice(choice)
                     open_wall(self.grid, row, col, curr_wall)
                     open_wall(self.grid, target_row, target_col, target_wall)
