@@ -6,5 +6,5 @@ EXIT=19,14
 OUTPUT_FILE=maze.txt
 PERFECT=True
 SEED=42
-ALGORITHM=binary_tree
+ALGORITHM=backtracking
 DISPLAY_42=True

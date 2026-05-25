@@ -40,11 +40,11 @@ class MazeGenerator:
         height: int,
         entry: tuple[int, int],
         exit: tuple[int, int],
+        output_file: str,
         algorithm: GenerateMethod = GenerateMethod.BACKTRACKING,
         seed: int = 42,
         perfect: bool = True,
         display_42: bool = True,
-        output_file: str | None = None,
     ) -> None:
         self.width = width
         self.height = height
