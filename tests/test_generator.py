@@ -22,7 +22,7 @@ def assert_wall_coherence(grid: MazeGrid) -> None:
                 assert grid.walls[row, col, 3] == grid.walls[row, col - 1, 1]
 
 
-def test_generator_initializes_grid_and_keeps_config_values() -> None:
+def test_generator_initialized() -> None:
     generator = MazeGenerator(
         width=4,
         height=3,
@@ -42,7 +42,7 @@ def test_generator_initializes_grid_and_keeps_config_values() -> None:
     assert not generator._grid.blocked.any()
 
 
-def test_from_config_converts_xy_coordinates_to_row_col(
+def test_from_config(
     tmp_path: Path,
 ) -> None:
     config = tmp_path / "config.txt"
@@ -56,7 +56,7 @@ def test_from_config_converts_xy_coordinates_to_row_col(
                 "OUTPUT_FILE=maze.txt",
                 "PERFECT=True",
                 "SEED=123",
-                "ALGORITHM=backtracking",
+                "ALGORITHM=binary_tree",
                 "DISPLAY_42=False",
             ]
         )
@@ -70,11 +70,11 @@ def test_from_config_converts_xy_coordinates_to_row_col(
     assert generator.exit == (5, 7)
     assert generator.output_file == "maze.txt"
     assert generator.seed == 123
-    assert generator.algorithm == GenerateMethod.BACKTRACKING
+    assert generator.algorithm == GenerateMethod.BINARY_TREE
     assert generator.display_42 is False
 
 
-def test_generate_backtracking_visits_all_unblocked_cells() -> None:
+def test_generate_backtracking() -> None:
     generator = MazeGenerator(
         width=5,
         height=4,
@@ -82,6 +82,7 @@ def test_generate_backtracking_visits_all_unblocked_cells() -> None:
         exit=(3, 4),
         seed=7,
         display_42=False,
+        output_file="",
     )
 
     grid = generator.generate(None)
@@ -91,20 +92,21 @@ def test_generate_backtracking_visits_all_unblocked_cells() -> None:
     assert_wall_coherence(grid)
 
 
-def test_generate_raises_when_42_pattern_does_not_fit() -> None:
+def test_generate_invaid_42_pattern() -> None:
     generator = MazeGenerator(
         width=5,
         height=4,
         entry=(0, 0),
         exit=(3, 4),
         display_42=True,
+        output_file="",
     )
 
     with pytest.raises(ValueError, match="too small for 42 pattern"):
         generator.generate(None)
 
 
-def test_generate_raises_for_unregistered_algorithm() -> None:
+def test_generate_invalid_algorithm() -> None:
     generator = MazeGenerator(
         width=5,
         height=4,
@@ -112,6 +114,7 @@ def test_generate_raises_for_unregistered_algorithm() -> None:
         exit=(3, 4),
         algorithm=GenerateMethod.PRIM,
         display_42=False,
+        output_file="",
     )
 
     with pytest.raises(ValueError, match="Update the AlgorithmFactory!"):
@@ -125,6 +128,7 @@ def test_apply_42_pattern_blocks_expected_cells() -> None:
         entry=(0, 0),
         exit=(6, 8),
         display_42=False,
+        output_file="",
     )
 
     generator._apply_42_pattern()

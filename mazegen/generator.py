@@ -11,28 +11,28 @@ from .utils import PATTERN_42, MazeGrid
 
 
 class MazeGenerator:
-    '''
-        The class that handle all the lifespan of the maze
+    """
+    The class that handle all the lifespan of the maze
 
-        This class centralize all the important information
-        as the dimension, entry, exit handle the choosen algorithm
-        the output, seed and initialize the maze grid
+    This class centralize all the important information
+    as the dimension, entry, exit handle the choosen algorithm
+    the output, seed and initialize the maze grid
 
-        Attributes:
-            width:     The maze's width as an int
-            height:    The maze's height as an int
-            entry:     The entry coord as an int tuple
-            exit:      The exit coord as an int tuple
-            algorithm: The choosen algorithm
-                       backtracking by default
-            seed:      The maze's seed as an int 42 by default
-            perfect:   Indicate if the maze must be perfect
-                       with a bool True by default
-            display_42: Indicate if the 42 symbol must be
-                        displayed True by default
-            output_file: Optional file name as an str for
-                         the output None by default
-    '''
+    Attributes:
+        width:     The maze's width as an int
+        height:    The maze's height as an int
+        entry:     The entry coord as an int tuple
+        exit:      The exit coord as an int tuple
+        algorithm: The choosen algorithm
+                   backtracking by default
+        seed:      The maze's seed as an int 42 by default
+        perfect:   Indicate if the maze must be perfect
+                   with a bool True by default
+        display_42: Indicate if the 42 symbol must be
+                    displayed True by default
+        output_file: Optional file name as an str for
+                     the output None by default
+    """
 
     def __init__(
         self,
@@ -40,11 +40,11 @@ class MazeGenerator:
         height: int,
         entry: tuple[int, int],
         exit: tuple[int, int],
+        output_file: str,
         algorithm: GenerateMethod = GenerateMethod.BACKTRACKING,
         seed: int = 42,
         perfect: bool = True,
         display_42: bool = True,
-        output_file: str | None = None,
     ) -> None:
         self.width = width
         self.height = height
@@ -64,36 +64,36 @@ class MazeGenerator:
 
     @classmethod
     def from_config(cls, path: str) -> Self:
-        '''
-            Create an instance of MazeGenerator with a config file
+        """
+        Create an instance of MazeGenerator with a config file
 
-            Use the parsing with the ConfigModel pydantic class to instanciate
-            MazeGenerator with the parameter of the given file
+        Use the parsing with the ConfigModel pydantic class to instanciate
+        MazeGenerator with the parameter of the given file
 
-            Args:
-                path: path to the file which contain the config
+        Args:
+            path: path to the file which contain the config
 
-            Returns:
-                An instance of MazeGenerator configurated with the given file
-        '''
+        Returns:
+            An instance of MazeGenerator configurated with the given file
+        """
         parser = Parser(path)
         config = parser.to_config()
         return cls(**config.model_dump())
 
     def generate(self, method: GenerateMethod | None) -> MazeGrid:
-        '''
-            The complet maze generation
+        """
+        The complet maze generation
 
-            Make the 42 patern and instanciate the choosen algorithm class
-            with the fatory and then generate the maze
+        Make the 42 patern and instanciate the choosen algorithm class
+        with the fatory and then generate the maze
 
-            Args:
-                method: The choosen algoritm to be initiate, if none it's the
-                        default one
+        Args:
+            method: The choosen algoritm to be initiate, if none it's the
+                    default one
 
-            Returns:
-                The final MazeGrid created with the choosen algorithm
-        '''
+        Returns:
+            The final MazeGrid created with the choosen algorithm
+        """
         if method is None:
             method = self.algorithm
         if self.display_42:
@@ -111,16 +111,16 @@ class MazeGenerator:
         return self._grid
 
     def _apply_42_pattern(self) -> None:
-        '''
-            Compute the center of the grid to display the 42 pattern
+        """
+        Compute the center of the grid to display the 42 pattern
 
-            It but the cells of the pattern in the block so they
-            can not be used
+        It but the cells of the pattern in the block so they
+        can not be used
 
-            Raises:
-                ValueError: If the grid is too small to contain the pattern
-                            or if the pattern erase the entry or exit
-        '''
+        Raises:
+            ValueError: If the grid is too small to contain the pattern
+                        or if the pattern erase the entry or exit
+        """
         height_42, width_42 = len(PATTERN_42), len(PATTERN_42[0])
         if self.height < height_42 or self.width < width_42:
             raise ValueError(
@@ -147,16 +147,16 @@ class MazeGenerator:
             self._grid.blocked[x][y] = True
 
     def print_maze(self) -> None:
-        '''
-            Make an assci representation of the maze
+        """
+        Make an assci representation of the maze
 
-            Go trough the numpy dimentional array and print:
-                + and --- for the borders
-                | for the vertical walls
-                E for the entry
-                X for the exit
-                ### for the cells of the 42 pattern
-        '''
+        Go trough the numpy dimentional array and print:
+            + and --- for the borders
+            | for the vertical walls
+            E for the entry
+            X for the exit
+            ### for the cells of the 42 pattern
+        """
         grid = self._grid.walls
         h, w = grid.shape[0], grid.shape[1]
         print("+" + "---+" * w)
@@ -185,6 +185,13 @@ class MazeGenerator:
             print(bottom)
 
     def _imperfect(self) -> None:
+        """
+        Turns a perfect maze to an imperfect one
+        The idea is applying a 2*2 stamp on the grid board
+        across 2 rows and 2 rols,
+        it won't violate the "no open 3x3 rule"
+        break the walls of the patter projection
+        """
         stamps = max(1, (self.width * self.height) // 30)
         seen: list[tuple[int, int]] = []
         for _ in range(stamps):
@@ -206,10 +213,11 @@ class MazeGenerator:
 
     def _apply_stamp(self, row: int, col: int) -> None:
         open_wall(self._grid, row, col, 1)
-        open_wall(self._grid, row, col + 1, 3)
-        open_wall(self._grid, row, col, 2)
-        open_wall(self._grid, row + 1, col, 0)
-        open_wall(self._grid, row, col + 1, 2)
-        open_wall(self._grid, row + 1, col + 1, 0)
         open_wall(self._grid, row + 1, col, 1)
+        open_wall(self._grid, row, col + 1, 3)
         open_wall(self._grid, row + 1, col + 1, 3)
+        open_wall(self._grid, row, col, 2)
+
+        open_wall(self._grid, row, col + 1, 2)
+        open_wall(self._grid, row + 1, col, 0)
+        open_wall(self._grid, row + 1, col + 1, 0)
