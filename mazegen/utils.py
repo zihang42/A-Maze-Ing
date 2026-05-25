@@ -3,11 +3,10 @@ from enum import Enum
 
 import numpy as np
 
-
+'''
+    The matrix for the Forty Two icone
+'''
 PATTERN_42: list[list[int]] = [
-    '''
-        The matrix for the Forty Two icone
-    '''
     [1, 0, 0, 0, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 0, 1, 1, 1],

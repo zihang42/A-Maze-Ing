@@ -69,7 +69,7 @@ class MazeGenerator:
 
             Use the parsing with the ConfigModel pydantic class to instanciate
             MazeGenerator with the parameter of the given file
-            
+
             Args:
                 path: path to the file which contain the config
 
