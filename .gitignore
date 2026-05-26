@@ -218,3 +218,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 maze.txt
+
+.DS_Store
