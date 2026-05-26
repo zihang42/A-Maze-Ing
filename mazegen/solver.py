@@ -26,7 +26,9 @@ class MazeSolver:
             path = algo.solve()
         return path
 
-    def save(self, method: SolveMethod | None, output_file: str) -> None:
+    def save(
+        self, method: SolveMethod | None, output_file: str
+    ) -> list[tuple[int, int]]:
         """
         Conver the grid to hex
         Save the entry/exit
@@ -47,6 +49,7 @@ class MazeSolver:
             f.write(f"{self.entry[1]},{self.entry[0]}\n")
             f.write(f"{self.exit[1]},{self.exit[0]}\n")
             f.write(self._convert_path(path) + "\n")
+            return path
 
     def _to_bit(self, row: int, col: int) -> int:
         """
