@@ -15,11 +15,11 @@ def main() -> None:
     try:
         maze_generator = MazeGenerator.from_config(path)
         grid = maze_generator.generate(None)
-        maze_generator.print_maze()
         maze_solver = MazeSolver(
             grid, maze_generator.entry, maze_generator.exit
         )
-        maze_solver.save(None, maze_generator.output_file)
+        path = maze_solver.save(None, maze_generator.output_file)
+        maze_generator.print_maze(path)
 
     except Exception as e:
         print(e)

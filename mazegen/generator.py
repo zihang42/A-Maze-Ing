@@ -146,7 +146,7 @@ class MazeGenerator:
         for x, y in cells:
             self._grid.blocked[x][y] = True
 
-    def print_maze(self) -> None:
+    def print_maze(self, path: list[tuple[int, int]] | None = None) -> None:
         """
         Make an assci representation of the maze
 
@@ -156,19 +156,22 @@ class MazeGenerator:
             E for the entry
             X for the exit
             ### for the cells of the 42 pattern
+            . for the path
         """
         grid = self._grid.walls
-        h, w = grid.shape[0], grid.shape[1]
-        print("+" + "---+" * w)
-        for i in range(h):
+        height, width = grid.shape[0], grid.shape[1]
+        print("+" + "---+" * width)
+        for i in range(height):
             row = "|"
-            for j in range(w):
+            for j in range(width):
                 if (i, j) == self.entry:
                     cell = " E "
                 elif (i, j) == self.exit:
                     cell = " X "
                 elif self._grid.blocked[i][j]:
                     cell = "###"
+                elif path and (i, j) in path:
+                    cell = " . "
                 else:
                     cell = "   "
                 if grid[i][j][1]:
@@ -177,7 +180,7 @@ class MazeGenerator:
                     row += cell + " "
             print(row)
             bottom = "+"
-            for j in range(w):
+            for j in range(width):
                 if grid[i][j][2]:
                     bottom += "---+"
                 else:
