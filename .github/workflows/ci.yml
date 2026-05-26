@@ -26,7 +26,7 @@ jobs:
               run: uv run flake8 --exclude=.venv,tests/output_validator.py .
 
             - name: Check mypy
-              run: uv run mypy --exclude=.venv,tests/output_validator.py .
+              run: uv run mypy --exclude '(\.venv|tests)' .
 
             - name: Run pytest
               run: uv run pytest

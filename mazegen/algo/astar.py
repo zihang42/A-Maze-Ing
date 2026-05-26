@@ -38,6 +38,9 @@ class AstarSolve(AlgorithmSolve):
         return [self.entry]
 
     def _path(self, previous) -> list[tuple[int, int]]:
+        """
+        Reconstruct the path from the dict
+        """
         path = []
         current = self.exit
         while current != self.entry:
