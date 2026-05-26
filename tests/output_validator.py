@@ -60,9 +60,7 @@ def load_maze_from_file(filename: str) -> List[List[int]]:
                     maze_grid.append(row)
 
     except ValueError as e:
-        raise ValueError(
-            f"Invalid hexadecimal character in line {line_num}: {e}"
-        )
+        raise ValueError(f"Invalid hexadecimal character in line {line_num}: {e}")
 
     return maze_grid
 
@@ -154,9 +152,7 @@ def main():
             print("Error: Empty maze file or no valid maze data found")
             sys.exit(1)
 
-        print(
-            f"Loaded maze: {len(maze_grid)} rows × {len(maze_grid[0])} columns"
-        )
+        print(f"Loaded maze: {len(maze_grid)} rows × {len(maze_grid[0])} columns")
 
         errors = validate_wall_coherence(maze_grid)
 
