@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -82,7 +83,8 @@ class AlgorithmSolve(ABC):
         """
         pass
 
-    def get_neighbors(self, coord) -> list[tuple[int, int]]:
+    def get_neighbors(self, coord: tuple[int, int])\
+            -> list[tuple[int, int]]:
         """
         Neignbors are the adjasent cells having the open wall
         """
@@ -101,7 +103,7 @@ class AlgorithmSolve(ABC):
         return neighbors
 
 
-def is_blocked(grid: MazeGrid, coord: tuple[int, int]) -> bool:
+def is_blocked(grid: MazeGrid, coord: tuple[int, int]) -> Any:
     """
     Check if the given coord is in the blocked list
 
