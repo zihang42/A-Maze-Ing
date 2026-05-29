@@ -25,3 +25,6 @@ lint-strict:
 
 cow:
 	UV_LINK_MODE=$(UV_LINK_MODE) uvx pycowsay hello from uv
+
+build:
+	UV_LINK_MODE=$(UV_LINK_MODE) uv build

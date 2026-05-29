@@ -1,6 +1,5 @@
 from .algo.algo_factory import AlgorithmFactory
-from .algo.utils import AlgorithmSolve
-from .algo.utils import SolveMethod, is_blocked
+from .algo.utils import AlgorithmSolve, SolveMethod, is_blocked
 from .utils import MazeGrid
 
 

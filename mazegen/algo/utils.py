@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Any
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 import numpy as np
 
@@ -14,7 +14,7 @@ class GenerateMethod(Enum):
     """
 
     BACKTRACKING = "backtracking"
-    PRIM = "prim"
+    # PRIM = "prim"
     BINARY_TREE = "binary_tree"
 
 
@@ -23,8 +23,8 @@ class SolveMethod(Enum):
     List of the solving algorithm
     """
 
-    BFS = "bfs"
-    DFS = "dfs"
+    # BFS = "bfs"
+    # DFS = "dfs"
     ASTAR = "astar"
 
 
@@ -83,8 +83,7 @@ class AlgorithmSolve(ABC):
         """
         pass
 
-    def get_neighbors(self, coord: tuple[int, int])\
-            -> list[tuple[int, int]]:
+    def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int]]:
         """
         Neignbors are the adjasent cells having the open wall
         """

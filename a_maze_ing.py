@@ -1,7 +1,8 @@
+import random
 import sys
 
-from mazegen.generator import MazeGenerator
-from mazegen.solver import MazeSolver
+from mazegen import GenerateMethod, MazeGenerator, MazeGrid
+from mazegen import MazeSolver
 from src.visualisor import MazeVisualizer
 
 
@@ -15,13 +16,31 @@ def main() -> None:
     path = sys.argv[1].strip()
     try:
         maze_generator = MazeGenerator.from_config(path)
-        grid = maze_generator.generate(None)
-        maze_solver = MazeSolver(
-            grid, maze_generator.entry, maze_generator.exit
+
+        def regenerate_maze() -> tuple[MazeGrid, list[tuple[int, int]]]:
+            method = random.choice(list(GenerateMethod))
+
+            new_generator = MazeGenerator.from_config(path)
+            new_grid = new_generator.generate(method)
+
+            new_solver = MazeSolver(
+                new_grid,
+                new_generator.entry,
+                new_generator.exit,
+            )
+            new_path = new_solver.save(None, new_generator.output_file)
+
+            return new_grid, new_path
+
+        grid, path_full = regenerate_maze()
+
+        viz = MazeVisualizer(
+            grid,
+            maze_generator.entry,
+            maze_generator.exit,
+            regenerate_maze,
         )
-        path_full = maze_solver.save(None, maze_generator.output_file)
-        viz = MazeVisualizer(grid, maze_generator.entry, maze_generator.exit)
-        # maze_generator.print_maze(path)
+
         viz.set_path(path_full)
         viz.start()
 

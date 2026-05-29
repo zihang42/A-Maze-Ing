@@ -1,7 +1,9 @@
 import random
+from typing import Callable
+
+from mlx import Mlx
 
 from mazegen.utils import MazeGrid
-from mlx import Mlx
 
 """
     Definition of the constants
@@ -51,6 +53,8 @@ class MazeVisualizer:
         grid: MazeGrid,
         entry: tuple[int, int],
         exit_coord: tuple[int, int],
+        regen_callback: Callable[[], tuple[MazeGrid, list[tuple[int, int]]]]
+        | None,
     ) -> None:
         """
         After initializing the variable we call the
@@ -65,6 +69,7 @@ class MazeVisualizer:
         self.rows, self.cols = grid.shape
         self.win_width = self.cols * CELL_SIZE
         self.win_height = self.rows * CELL_SIZE + (CELL_SIZE * 2)
+        self.regen_callback = regen_callback
 
         # Creation of the MiniLibX window and image
         self.m = Mlx()
@@ -223,7 +228,7 @@ class MazeVisualizer:
             self.win_width // 4,
             (self.rows * CELL_SIZE) + (CELL_SIZE),
             0xFFFFFF,
-            "1: refresh 2: path 3: color 4: quit",
+            "1: regen 2: path 3: color 4: quit",
         )
 
     def start(self) -> None:
@@ -242,6 +247,19 @@ class MazeVisualizer:
         self.m.mlx_destroy_image(self.mlx_ptr, self.img_ptr)
         self.m.mlx_destroy_window(self.mlx_ptr, self.win_ptr)
         self.m.mlx_release(self.mlx_ptr)
+
+    def re_gen(self) -> None:
+        if self.regen_callback is None:
+            return
+
+        new_grid, new_path = self.regen_callback()
+
+        self.grid = new_grid
+        self.path = new_path
+        self.rows, self.cols = new_grid.shape
+
+        self.generate_maze_image()
+        self.reset_window()
 
 
 def handle_key(keynum: int, visualizer: MazeVisualizer) -> None:
@@ -287,6 +305,7 @@ def handle_key(keynum: int, visualizer: MazeVisualizer) -> None:
         visualizer.generate_maze_image()
         visualizer.reset_window()
     elif keynum == 49:
+        visualizer.re_gen()
         visualizer.reset_window()
 
 

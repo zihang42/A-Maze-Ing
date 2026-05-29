@@ -1,6 +1,7 @@
+from typing import Any
+
 from .astar import AstarSolve
 from .backtracking import BacktrackingGen
-from typing import Any
 from .binary_tree import BinaryTreeGen
 from .utils import AlgorithmGen, AlgorithmSolve, GenerateMethod, SolveMethod
 

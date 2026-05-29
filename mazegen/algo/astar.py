@@ -37,8 +37,9 @@ class AstarSolve(AlgorithmSolve):
                     heapq.heappush(priority_queue, (f_score, neighbor))
         return [self.entry]
 
-    def _path(self, previous: dict
-              [tuple[int, int], tuple[int, int]]) -> list[tuple[int, int]]:
+    def _path(
+        self, previous: dict[tuple[int, int], tuple[int, int]]
+    ) -> list[tuple[int, int]]:
         """
         Reconstruct the path from the dict
         """

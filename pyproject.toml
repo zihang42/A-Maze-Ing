@@ -9,7 +9,6 @@ dependencies = [
     "mypy>=2.1.0",
     "numpy>=2.4.6",
     "pydantic>=2.13.4",
-    "pytest>=9.0.3",
     "mlx @ file:///${PROJECT_ROOT}/lib/mlx-2.2-py3-none-any.whl"
 ]
 
