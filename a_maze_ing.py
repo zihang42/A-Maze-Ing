@@ -2,7 +2,7 @@ import sys
 
 from mazegen.generator import MazeGenerator
 from mazegen.solver import MazeSolver
-from visualisor import MazeVisualizer
+from src.visualisor import MazeVisualizer
 
 
 def main() -> None:
