@@ -12,7 +12,7 @@ using a hexadecimal wall representation. The visual representation is provided.
 ### Create venv
 
 ```
-uv venv --python 3.13
+make install
 source ./venv/bin/activate
 ```
 
@@ -30,6 +30,10 @@ uv pip install dist/mazegen-1.0.0-py3-none-any.whl
 ```
 
 ### Usage
+So now we only have to do this?
+'''
+make run
+'''
 #### Load from config
 ```python
 from mazegen import GenerateMethod, MazeGenerator, MazeSolver, SolveMethod
@@ -66,3 +70,6 @@ maze_solver.save(SolveMethod.ASTAR, maze_generator.output_file)
 *Ziwang:*
 * Maze generator
 * Maze solver
+*Lohann:*
+- Visualizor
+- Makefile things
