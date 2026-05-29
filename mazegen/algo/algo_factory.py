@@ -1,5 +1,6 @@
 from .astar import AstarSolve
 from .backtracking import BacktrackingGen
+from typing import Any
 from .binary_tree import BinaryTreeGen
 from .utils import AlgorithmGen, AlgorithmSolve, GenerateMethod, SolveMethod
 
@@ -26,7 +27,7 @@ class AlgorithmFactory:
 
     @classmethod
     def create(
-        cls, method: GenerateMethod | SolveMethod, **kwargs
+        cls, method: GenerateMethod | SolveMethod, **kwargs: Any
     ) -> AlgorithmGen | AlgorithmSolve:
         """
         Create and Initialise an instance of the given algorithm

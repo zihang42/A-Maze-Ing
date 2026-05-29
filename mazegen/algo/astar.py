@@ -13,7 +13,7 @@ class AstarSolve(AlgorithmSolve):
     """
 
     def solve(self) -> list[tuple[int, int]]:
-        def h(a: tuple[int, int], b: tuple[int, int]):
+        def h(a: tuple[int, int], b: tuple[int, int]) -> int:
             return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
         priority_queue: list[tuple[int, tuple[int, int]]] = []
@@ -37,7 +37,8 @@ class AstarSolve(AlgorithmSolve):
                     heapq.heappush(priority_queue, (f_score, neighbor))
         return [self.entry]
 
-    def _path(self, previous) -> list[tuple[int, int]]:
+    def _path(self, previous: dict
+              [tuple[int, int], tuple[int, int]]) -> list[tuple[int, int]]:
         """
         Reconstruct the path from the dict
         """
