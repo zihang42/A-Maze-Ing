@@ -41,7 +41,7 @@ class MazeGenerator:
         entry: tuple[int, int],
         exit: tuple[int, int],
         output_file: str,
-        algorithm: GenerateMethod = GenerateMethod.BINARY_TREE,
+        algorithm: GenerateMethod = GenerateMethod.BACKTRACKING,
         seed: int = 42,
         perfect: bool = True,
         display_42: bool = True,

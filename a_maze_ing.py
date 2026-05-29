@@ -12,8 +12,7 @@ def main() -> None:
     """
     if len(sys.argv) != 2:
         return
-    if len(sys.argv) == 2:
-        path = sys.argv[1].strip()
+    path = sys.argv[1].strip()
     try:
         maze_generator = MazeGenerator.from_config(path)
         grid = maze_generator.generate(None)
